@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const sections = ['home', 'how-to-play', 'characters', 'gameplay', 'about'];
@@ -56,6 +57,27 @@ export default function Home() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Close modal on ESC key press and prevent body scroll
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && zoomedImage) {
+        setZoomedImage(null);
+      }
+    };
+
+    if (zoomedImage) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleEscape);
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [zoomedImage]);
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -238,221 +260,218 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Game Concept Section */}
-      <section id="how-to-play" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
+      {/* Game Concept Section - Iconic Moments Style */}
+      <section id="how-to-play" className="relative py-20 md:py-32 overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
           >
-            <h2 className="text-5xl font-bold mb-4 text-black">
-              Game Concept
-            </h2>
-            <div className="w-24 h-1 bg-black mx-auto mb-12"></div>
-          </motion.div>
-
-          <div className="max-w-6xl mx-auto">
-            {/* Main Introduction Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <Card className="border-2 border-black bg-black text-white p-8 md:p-12">
-                <CardContent className="p-0">
-                  <h3 className="text-3xl font-bold mb-6 text-center">
-                    Super Nova
-                  </h3>
-                  <p className="text-xl text-gray-200 text-center leading-relaxed">
-                    A fast-paced sci-fi action game built with Unreal Engine 5, where humanity stands on the edge of extinction.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Story Cards Grid */}
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <Card className="border-2 border-black bg-white h-full p-6 hover:shadow-xl transition-shadow">
-                  <CardHeader className="p-0 mb-4">
-                    <CardTitle className="text-2xl font-bold text-black mb-2">
-                      The Invasion
-                    </CardTitle>
-                    <div className="w-16 h-0.5 bg-black"></div>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <p className="text-gray-700 leading-relaxed">
-                      In the far reaches of space, a highly advanced alien world has begun invading and destroying planets one by one, harvesting their resources and enslaving entire civilizations. Earth is their next target.
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                <Card className="border-2 border-black bg-white h-full p-6 hover:shadow-xl transition-shadow">
-                  <CardHeader className="p-0 mb-4">
-                    <CardTitle className="text-2xl font-bold text-black mb-2">
-                      The Heroes
-                    </CardTitle>
-                    <div className="w-16 h-0.5 bg-black"></div>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <p className="text-gray-700 leading-relaxed">
-                      To stop the invasion, three super-powered heroes rise — each bound by a unique cosmic ability. United by an oath to protect Earth, they prepare for the final stand.
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-
-            {/* Journey Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <Card className="border-2 border-black bg-white p-6 md:p-8 hover:shadow-xl transition-shadow">
-                <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-2xl font-bold text-black mb-2">
-                    The Journey Begins
-                  </CardTitle>
-                  <div className="w-16 h-0.5 bg-black"></div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <p className="text-gray-700 text-lg leading-relaxed">
-                    The journey begins aboard a space station orbiting near Earth. From there, the heroes launch into battle, piloting their spacecraft and descending into intense combat zones across the planet's surface.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
+            <source src="/concept-section.mp4" type="video/mp4" />
+          </video>
+          {/* Fade Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-black/80"></div>
         </div>
-      </section>
 
-      {/* Heroes Section */}
-      <section id="characters" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-16 md:mb-24"
           >
-            <h2 className="text-5xl font-bold mb-4 text-black">
-              Three Super-Powered Heroes
+            <h2 className="text-4xl md:text-6xl font-black mb-4 text-white uppercase tracking-wider">
+              Iconic Moments
             </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Choose between three unique heroes, each with distinct powers and combat styles
+            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
+              Super Nova returns, stronger than ever, ready to protect and inspire all!
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Velocity Hero */}
+          <div className="max-w-7xl mx-auto space-y-16 md:space-y-24">
+            {/* Moment 1 - Image Left, Text Right */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
+              className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch"
             >
-              <Card className="border-2 border-black bg-black h-full hover:shadow-xl transition-shadow flex flex-col p-0">
-                <div className="w-full h-80 overflow-hidden bg-gray-100 flex-shrink-0 rounded-t-lg">
-                  <img
-                    src="/velocity.PNG"
-                    alt="Velocity"
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: 'top center' }}
-                  />
-                </div>
-                <CardHeader className="pt-6">
-                  <CardTitle className="text-2xl font-bold text-white">Velocity</CardTitle>
-                  <CardDescription className="text-lg text-gray-300">
-                    Light Speed Abilities
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pb-6">
-                  <p className="text-gray-200">
-                    A hero with superhuman speed and movement abilities, capable of navigating at lightning speed and delivering fast, powerful strikes against enemies.
-                  </p>
-                </CardContent>
-              </Card>
+              {/* Image */}
+              <div className="w-full aspect-[4/3] overflow-hidden">
+                <img
+                  src="/city-1.jpg"
+                  alt="City Invasion"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Text Content */}
+              <div className="text-white flex flex-col justify-center">
+                <h3 className="text-2xl md:text-4xl font-black uppercase mb-6 leading-tight">
+                  Descend Into Intense Combat Zones
+                </h3>
+                <p className="text-base md:text-lg text-white/80 mb-6 leading-relaxed">
+                  As robotic invaders lay waste to cities worldwide, the heroes descend into intense combat zones across Earth's surface. Engage in high-intensity missions against waves of advanced enemy robots.
+                </p>
+                <Button 
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-6 rounded-none uppercase w-fit"
+                  onClick={() => setZoomedImage('city-1')}
+                >
+                  View Now
+                </Button>
+              </div>
             </motion.div>
 
-            {/* Void Hero */}
+            {/* Moment 2 - Text Left, Image Right */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
+              className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch"
             >
-              <Card className="border-2 border-black bg-black h-full hover:shadow-xl transition-shadow flex flex-col p-0">
-                <div className="w-full h-80 overflow-hidden bg-gray-100 flex-shrink-0 rounded-t-lg">
-                  <img
-                    src="/void.PNG"
-                    alt="Void"
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: 'top center' }}
-                  />
-                </div>
-                <CardHeader className="pt-6">
-                  <CardTitle className="text-2xl font-bold text-white">Void</CardTitle>
-                  <CardDescription className="text-lg text-gray-300">
-                    Cosmic Void Powers
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pb-6">
-                  <p className="text-gray-200">
-                    Wields the power of cosmic voids, manipulating space and darkness to create devastating attacks and control the battlefield.
-                  </p>
-                </CardContent>
-              </Card>
+              {/* Text Content */}
+              <div className="text-white order-2 md:order-1 flex flex-col justify-center">
+                <h3 className="text-2xl md:text-4xl font-black uppercase mb-6 leading-tight">
+                  Complete Multiple Objectives To Clear Invasion Zones
+                </h3>
+                <p className="text-base md:text-lg text-white/80 mb-6 leading-relaxed">
+                  Navigate through devastated urban landscapes, complete multiple objectives and quests to clear invasion zones. Each mission brings you closer to stopping the alien threat.
+                </p>
+                <Button 
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-6 rounded-none uppercase w-fit"
+                  onClick={() => setZoomedImage('city-2')}
+                >
+                  View Now
+                </Button>
+              </div>
+
+              {/* Image */}
+              <div className="w-full aspect-[4/3] overflow-hidden order-1 md:order-2">
+                <img
+                  src="/city-2.jpg"
+                  alt="City Invasion"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </motion.div>
 
-            {/* Overlord Hero */}
+            {/* Moment 3 - Image Left, Text Right */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
+              className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch"
             >
-              <Card className="border-2 border-black bg-black h-full hover:shadow-xl transition-shadow flex flex-col p-0">
-                <div className="w-full h-80 overflow-hidden bg-gray-100 flex-shrink-0 rounded-t-lg">
-                  <img
-                    src="/overlord.PNG"
-                    alt="Overlord"
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: 'top center' }}
-                  />
-                </div>
-                <CardHeader className="pt-6">
-                  <CardTitle className="text-2xl font-bold text-white">Overlord</CardTitle>
-                  <CardDescription className="text-lg text-gray-300">
-                    Dominating Force
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pb-6">
-                  <p className="text-gray-200">
-                    A commanding presence on the battlefield, using overwhelming force and tactical superiority to dominate enemies and lead the charge.
-                  </p>
-                </CardContent>
-              </Card>
+              {/* Image */}
+              <div className="w-full aspect-[4/3] overflow-hidden">
+                <img
+                  src="/city-3.jpg"
+                  alt="City Invasion"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Text Content */}
+              <div className="text-white flex flex-col justify-center">
+                <h3 className="text-2xl md:text-4xl font-black uppercase mb-6 leading-tight">
+                  Battle Through Devastated Cities Worldwide
+                </h3>
+                <p className="text-base md:text-lg text-white/80 mb-6 leading-relaxed">
+                  Fight through the ruins of Earth's greatest cities as robotic invaders harvest resources and destroy everything in their path. The heroes must act fast before Earth falls completely.
+                </p>
+                <Button 
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-6 rounded-none uppercase w-fit"
+                  onClick={() => setZoomedImage('city-3')}
+                >
+                  View Now
+                </Button>
+              </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Heroes Section - Cards */}
+      <section id="characters" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-5xl font-bold mb-8 text-black">
+              Heroes
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto items-start">
+            {[
+              {
+                image: '/velocity.PNG',
+                name: 'Velocity',
+                subtitle: 'Light Speed Abilities',
+                description: 'A hero with superhuman speed and movement abilities, capable of navigating at lightning speed and delivering fast, powerful strikes against enemies.',
+                topOffset: 'mt-0'
+              },
+              {
+                image: '/void.PNG',
+                name: 'Void',
+                subtitle: 'Cosmic Void Powers',
+                description: 'Wields the power of cosmic voids, manipulating space and darkness to create devastating attacks and control the battlefield.',
+                topOffset: 'mt-16'
+              },
+              {
+                image: '/overlord.PNG',
+                name: 'Overlord',
+                subtitle: 'Dominating Force',
+                description: 'A commanding presence on the battlefield, using overwhelming force and tactical superiority to dominate enemies and lead the charge.',
+                topOffset: 'mt-8'
+              }
+            ].map((hero, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 150 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
+                viewport={{ once: true }}
+                className={`relative h-[600px] overflow-hidden rounded-lg ${hero.topOffset}`}
+              >
+                {/* Image - Full Size */}
+                <img
+                  src={hero.image}
+                  alt={hero.name}
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Gradient Overlay for Text Readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+                
+                {/* Text Content - Bottom Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
+                  <h2 className="text-3xl md:text-4xl font-black mb-2 uppercase tracking-wider">
+                    {hero.name}
+                  </h2>
+                  <h3 className="text-lg md:text-xl font-bold mb-4 text-yellow-400">
+                    {hero.subtitle}
+                  </h3>
+                  <p className="text-sm md:text-base text-white/90 leading-relaxed">
+                    {hero.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -570,50 +589,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* City Invasion Section */}
-      <section id="city-invasion" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-5xl font-bold mb-8 text-black">
-              City Invasion Zones
-            </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Descend into intense combat zones across Earth's surface as robotic invaders lay waste to cities worldwide.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {[
-              { src: "/city-1.jpg", alt: "City Invasion 1" },
-              { src: "/city-2.jpg", alt: "City Invasion 2" },
-              { src: "/city-3.jpg", alt: "City Invasion 3" }
-            ].map((city, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: i * 0.2 }}
-                viewport={{ once: true }}
-                className="border-2 border-black overflow-hidden aspect-video"
-              >
-                <img
-                  src={city.src}
-                  alt={city.alt}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Boss Battle Section */}
+{/* Boss Battle Section */}
       <section id="boss-battle" className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <motion.div
@@ -668,6 +644,39 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Image Modal/Lightbox */}
+      {zoomedImage && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setZoomedImage(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={`/${zoomedImage}.jpg`}
+              alt="City Invasion"
+              className="max-w-full max-h-full object-contain"
+            />
+            <button
+              onClick={() => setZoomedImage(null)}
+              className="absolute top-4 right-4 text-white hover:text-yellow-500 transition-colors text-4xl font-bold bg-black/50 rounded-full w-12 h-12 flex items-center justify-center"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Footer */}
       <footer className="py-8 bg-gray-900 text-white">
