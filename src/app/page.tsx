@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [gameplayCarouselIndex, setGameplayCarouselIndex] = useState(0);
 
   useEffect(() => {
     const sections = ['home', 'how-to-play', 'characters', 'gameplay', 'about'];
@@ -78,6 +79,20 @@ export default function Home() {
       document.body.style.overflow = 'unset';
     };
   }, [zoomedImage]);
+
+  // Auto-slide gameplay carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGameplayCarouselIndex((prev) => {
+        if (prev >= 5) {
+          return 0; // Loop back to start
+        }
+        return prev + 1;
+      });
+    }, 3000); // Change slide every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -477,154 +492,93 @@ export default function Home() {
       </section>
 
       {/* Gameplay Features Section */}
-      <section id="gameplay" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section id="gameplay" className="h-screen relative bg-cover bg-center bg-no-repeat flex items-center" style={{ backgroundImage: 'url(/features-section.png)' }}>
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="container mx-auto px-2 md:px-4 relative z-10 w-full h-full flex flex-col">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-8 mt-12 md:mt-16"
           >
-            <h2 className="text-5xl font-bold mb-8 text-black">
+            <h2 className="text-5xl font-bold mb-8 text-white">
               Gameplay Features
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {[
-              "Choose between three unique heroes, each with distinct powers and combat styles",
-              "Engage in high-intensity missions against waves of advanced enemy robots",
-              "Complete multiple objectives (quests) to clear invasion zones",
-              "Face a massive boss battle at the end of each mission",
-              "Defeat a giant robotic boss with devastating abilities to achieve victory",
-              "Explosive combat, cinematic sci-fi action, and epic boss fights"
-            ].map((feature, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: i * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="border-2 border-black bg-black h-full hover:shadow-xl transition-shadow">
-                  <CardContent className="pt-6">
-                    <p className="text-white text-center">
-                      {feature}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Gameplay Images Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-                viewport={{ once: true }}
-                className="aspect-video overflow-hidden border-2 border-black"
-              >
-                <img
-                  src={`/gameplay-${i}.png`}
-                  alt={`Gameplay ${i}`}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Space Station Section */}
-      <section id="space-station" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-5xl font-bold mb-8 text-black">
-              The Journey Begins
-            </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-12">
-              The journey begins aboard a space station orbiting near Earth. From there, the heroes launch into battle, piloting their spacecraft and descending into intense combat zones across the planet's surface.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-5 gap-6 md:gap-8 w-full items-center flex-1 overflow-hidden">
+            {/* Bullet Points on Left */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="border-2 border-black overflow-hidden"
+              className="flex items-center h-full md:col-span-2"
             >
-              <img
-                src="/space-1.png"
-                alt="Space Station"
-                className="w-full h-full object-cover"
-              />
+              <ul className="space-y-4 text-white text-lg">
+                {[
+                  "Choose between three unique heroes, each with distinct powers and combat styles",
+                  "Engage in high-intensity missions against waves of advanced enemy robots",
+                  "Complete multiple objectives (quests) to clear invasion zones",
+                  "Face a massive boss battle at the end of each mission",
+                  "Defeat a giant robotic boss with devastating abilities to achieve victory",
+                  "Explosive combat, cinematic sci-fi action, and epic boss fights"
+                ].map((feature, i) => (
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    viewport={{ once: true }}
+                    className="flex items-start"
+                  >
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span>{feature}</span>
+                  </motion.li>
+                ))}
+              </ul>
             </motion.div>
+
+            {/* Gameplay Images Carousel on Right */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="border-2 border-black overflow-hidden"
+              className="relative md:col-span-3"
             >
-              <img
-                src="/lobby.png"
-                alt="Hero Lobby"
-                className="w-full h-full object-cover"
-              />
+              <div className="relative overflow-hidden rounded-lg">
+                <motion.div
+                  className="flex gap-3 md:gap-4"
+                  animate={{
+                    x: `-${gameplayCarouselIndex * (100 / 3)}%`
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                >
+                  {[1, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 h-[500px] rounded-lg overflow-hidden w-[calc(33.333%-0.5rem)] md:w-[calc(33.333%-0.67rem)]"
+                    >
+                      <img
+                        src={`/gameplay-${i}.png`}
+                        alt={`Gameplay ${i}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-{/* Boss Battle Section */}
-      <section id="boss-battle" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-5xl font-bold mb-8 text-black">
-              Epic Boss Battles
-            </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-12">
-              Face a massive boss battle at the end of each mission. Defeat a giant robotic boss with devastating abilities to achieve victory and save Earth from total annihilation.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="max-w-4xl mx-auto border-4 border-black overflow-hidden"
-          >
-            <img
-              src="/boss.jpg"
-              alt="Giant Robotic Boss"
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </div>
-      </section>
+      {/* Space Station Section */}
 
       {/* Call to Action Section */}
-      <section id="about" className="py-20 bg-black text-white">
+      <section id="about" className="py-20 bg-white text-black">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -632,13 +586,13 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl font-bold mb-8">
+            <h2 className="text-5xl font-bold mb-8 text-black">
               Are You Ready?
             </h2>
-            <p className="text-2xl mb-8 text-gray-300">
+            <p className="text-2xl mb-8 text-gray-700">
               Stand against the invasion and save Earth from total annihilation.
             </p>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Super Nova delivers explosive combat, cinematic sci-fi action, and epic boss fights in a battle to save Earth.
             </p>
           </motion.div>
