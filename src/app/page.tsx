@@ -8,6 +8,8 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [gameplayCarouselIndex, setGameplayCarouselIndex] = useState(0);
+  const [pageLoaded, setPageLoaded] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     const sections = ['home', 'how-to-play', 'characters', 'gameplay', 'about'];
@@ -93,8 +95,144 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  // Global page loading
+  useEffect(() => {
+    const loadAssets = () => {
+      // Small delay to ensure DOM is fully rendered
+      setTimeout(() => {
+        const images = document.querySelectorAll('img');
+        const videos = document.querySelectorAll('video');
+        const totalAssets = images.length + videos.length;
+        let loadedAssets = 0;
+
+        if (totalAssets === 0) {
+          setTimeout(() => {
+            setPageLoaded(true);
+          }, 500);
+          return;
+        }
+
+        const updateProgress = () => {
+          loadedAssets++;
+          const progress = Math.min((loadedAssets / totalAssets) * 100, 100);
+          setLoadingProgress(progress);
+
+          if (loadedAssets >= totalAssets) {
+            setTimeout(() => {
+              setPageLoaded(true);
+            }, 500);
+          }
+        };
+
+        images.forEach((img) => {
+          if (img.complete) {
+            updateProgress();
+          } else {
+            img.addEventListener('load', updateProgress, { once: true });
+            img.addEventListener('error', updateProgress, { once: true });
+          }
+        });
+
+        videos.forEach((video) => {
+          if (video.readyState >= 3) {
+            updateProgress();
+          } else {
+            video.addEventListener('canplaythrough', updateProgress, { once: true });
+            video.addEventListener('loadeddata', updateProgress, { once: true });
+            video.addEventListener('error', updateProgress, { once: true });
+          }
+        });
+
+        // Fallback: if nothing loads after 5 seconds, show the page anyway
+        setTimeout(() => {
+          setPageLoaded(true);
+        }, 5000);
+      }, 100);
+    };
+
+    if (document.readyState === 'complete') {
+      loadAssets();
+    } else {
+      window.addEventListener('load', loadAssets);
+      return () => window.removeEventListener('load', loadAssets);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      {/* Global Loading Screen */}
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: pageLoaded ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+        className="fixed inset-0 z-[9999] bg-black flex items-center justify-center pointer-events-none"
+        style={{ display: pageLoaded ? 'none' : 'flex' }}
+      >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
+          {/* Game Logo/Title */}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8"
+          >
+            <h2 className="text-6xl md:text-8xl font-black text-white font-blanka tracking-widest mb-4">
+              SUPERNOVA
+            </h2>
+            <div className="w-32 h-1 mx-auto bg-white/20 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"
+                style={{ width: `${loadingProgress}%` }}
+                animate={{ width: `${loadingProgress}%` }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+          </motion.div>
+
+          {/* Loading Text */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="text-xl md:text-2xl text-white/80 uppercase tracking-wider font-bold"
+          >
+            Loading...
+          </motion.p>
+
+          {/* Loading Percentage */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-sm md:text-base text-white/60 mt-4 font-mono"
+          >
+            {Math.round(loadingProgress)}%
+          </motion.p>
+
+          {/* Animated Dots */}
+          <div className="flex justify-center gap-2 mt-6">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="w-3 h-3 bg-purple-500 rounded-full"
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50">
         <div className="container mx-auto px-4 py-4">
