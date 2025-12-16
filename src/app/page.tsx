@@ -108,16 +108,16 @@ export default function Home() {
                 Home
               </a>
               <a href="#how-to-play" className={`text-black font-medium tracking-wider uppercase squiggly-underline squiggly-underline-2 ${activeSection === 'how-to-play' ? 'active' : ''}`}>
-                Concept
+                Iconic Moments
               </a>
               <a href="#characters" className={`text-black font-medium tracking-wider uppercase squiggly-underline squiggly-underline-3 ${activeSection === 'characters' ? 'active' : ''}`}>
                 Heroes
               </a>
               <a href="#gameplay" className={`text-black font-medium tracking-wider uppercase squiggly-underline squiggly-underline-4 ${activeSection === 'gameplay' ? 'active' : ''}`}>
-                Gameplay
+                Gameplay Features
               </a>
               <a href="#about" className={`text-black font-medium tracking-wider uppercase squiggly-underline squiggly-underline-5 ${activeSection === 'about' ? 'active' : ''}`}>
-                About
+                Are You Ready?
               </a>
             </div>
             <div className="md:hidden">
@@ -204,8 +204,8 @@ export default function Home() {
                 <div className="relative hidden md:block w-full h-full">
                   <img
                     id="hero-image"
-                    src="/hero.png"
-                    alt="SUPERNOVA Game"
+              src="/hero.png"
+              alt="SUPERNOVA Game"
                     className="w-full h-full object-contain"
                   />
                   {/* Electricity GIF - Positioned relative to desktop image */}
@@ -312,13 +312,13 @@ export default function Home() {
 
           <div className="max-w-7xl mx-auto space-y-16 md:space-y-24">
             {/* Moment 1 - Image Left, Text Right */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
               className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch"
-            >
+          >
               {/* Image */}
               <div className="w-full aspect-[4/3] overflow-hidden">
                 <img
@@ -327,12 +327,12 @@ export default function Home() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              
+
               {/* Text Content */}
               <div className="text-white flex flex-col justify-center">
                 <h3 className="text-2xl md:text-4xl font-black uppercase mb-6 leading-tight">
                   Descend Into Intense Combat Zones
-                </h3>
+            </h3>
                 <p className="text-base md:text-lg text-white/80 mb-6 leading-relaxed">
                   As robotic invaders lay waste to cities worldwide, the heroes descend into intense combat zones across Earth's surface. Engage in high-intensity missions against waves of advanced enemy robots.
                 </p>
@@ -343,14 +343,14 @@ export default function Home() {
                   View Now
                 </Button>
               </div>
-            </motion.div>
+              </motion.div>
 
             {/* Moment 2 - Text Left, Image Right */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
+                  viewport={{ once: true }}
               className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch"
             >
               {/* Text Content */}
@@ -360,14 +360,14 @@ export default function Home() {
                 </h3>
                 <p className="text-base md:text-lg text-white/80 mb-6 leading-relaxed">
                   Navigate through devastated urban landscapes, complete multiple objectives and quests to clear invasion zones. Each mission brings you closer to stopping the alien threat.
-                </p>
+                      </p>
                 <Button 
                   className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-6 rounded-none uppercase w-fit"
                   onClick={() => setZoomedImage('city-2')}
                 >
                   View Now
                 </Button>
-              </div>
+          </div>
 
               {/* Image */}
               <div className="w-full aspect-[4/3] overflow-hidden order-1 md:order-2">
@@ -483,7 +483,7 @@ export default function Home() {
                   </h3>
                   <p className="text-sm md:text-base text-white/90 leading-relaxed">
                     {hero.description}
-                  </p>
+                    </p>
                 </div>
               </motion.div>
             ))}
@@ -502,7 +502,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-8 mt-12 md:mt-16"
           >
-            <h2 className="text-5xl font-bold mb-8 text-white">
+            <h2 className="text-6xl md:text-7xl font-bold mb-8 text-white">
               Gameplay Features
             </h2>
           </motion.div>
@@ -516,7 +516,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="flex items-center h-full md:col-span-2"
             >
-              <ul className="space-y-4 text-white text-lg">
+              <ul className="space-y-4 text-white text-xl md:text-2xl">
                 {[
                   "Choose between three unique heroes, each with distinct powers and combat styles",
                   "Engage in high-intensity missions against waves of advanced enemy robots",
@@ -633,7 +633,7 @@ export default function Home() {
       )}
 
       {/* Footer */}
-      <footer className="py-8 bg-gray-900 text-white">
+      <footer className="py-8 bg-black text-white">
         <div className="container mx-auto px-4 text-center">
           <motion.p
             initial={{ opacity: 0 }}
