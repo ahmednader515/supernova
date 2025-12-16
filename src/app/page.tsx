@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +10,8 @@ export default function Home() {
   const [gameplayCarouselIndex, setGameplayCarouselIndex] = useState(0);
   const [pageLoaded, setPageLoaded] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const sections = ['home', 'how-to-play', 'characters', 'gameplay', 'about'];
@@ -66,6 +68,9 @@ export default function Home() {
       if (e.key === 'Escape' && zoomedImage) {
         setZoomedImage(null);
       }
+      if (e.key === 'Escape' && isSidebarOpen) {
+        setIsSidebarOpen(false);
+      }
     };
 
     if (zoomedImage) {
@@ -75,25 +80,50 @@ export default function Home() {
       document.body.style.overflow = 'unset';
     }
 
+    if (isSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleEscape);
+    }
+
     return () => {
       window.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      if (!zoomedImage && !isSidebarOpen) {
+        document.body.style.overflow = 'unset';
+      }
     };
-  }, [zoomedImage]);
+  }, [zoomedImage, isSidebarOpen]);
 
-  // Auto-slide gameplay carousel
+  // Check if mobile for carousel
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Auto-slide gameplay carousel with seamless looping
+  useEffect(() => {
+    const totalImages = 8; // Total number of images
+    
     const interval = setInterval(() => {
       setGameplayCarouselIndex((prev) => {
-        if (prev >= 5) {
-          return 0; // Loop back to start
+        const nextIndex = prev + 1;
+        // When we reach the end, seamlessly loop back to start
+        if (nextIndex >= totalImages) {
+          // Reset to 0 after a brief delay to allow transition to complete
+          setTimeout(() => {
+            setGameplayCarouselIndex(0);
+          }, 600); // Slightly longer than transition duration
+          return nextIndex; // Show duplicated images during transition
         }
-        return prev + 1;
+        return nextIndex;
       });
     }, 3000); // Change slide every 3 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isMobile]);
 
   // Global page loading
   useEffect(() => {
@@ -258,13 +288,97 @@ export default function Home() {
               </a>
             </div>
             <div className="md:hidden">
-              <Button variant="outline" size="sm" className="border-2 border-black hover:bg-gray-100">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-2 border-black hover:bg-gray-100"
+                onClick={() => setIsSidebarOpen(true)}
+              >
                 ☰
               </Button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-[60] md:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+            {/* Sidebar */}
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 left-0 h-full w-64 bg-white shadow-2xl z-[70] md:hidden"
+            >
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                  <div className="text-xl font-bold text-black tracking-wider">
+                    SUPERNOVA
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-black hover:bg-gray-100"
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                {/* Navigation Links */}
+                <nav className="flex-1 p-4 space-y-4">
+                  <a
+                    href="#home"
+                    className={`block text-black font-medium tracking-wider uppercase py-3 px-4 rounded hover:bg-gray-100 transition-colors ${activeSection === 'home' ? 'bg-gray-100' : ''}`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    Home
+                  </a>
+                  <a
+                    href="#how-to-play"
+                    className={`block text-black font-medium tracking-wider uppercase py-3 px-4 rounded hover:bg-gray-100 transition-colors ${activeSection === 'how-to-play' ? 'bg-gray-100' : ''}`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    Iconic Moments
+                  </a>
+                  <a
+                    href="#characters"
+                    className={`block text-black font-medium tracking-wider uppercase py-3 px-4 rounded hover:bg-gray-100 transition-colors ${activeSection === 'characters' ? 'bg-gray-100' : ''}`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    Heroes
+                  </a>
+                  <a
+                    href="#gameplay"
+                    className={`block text-black font-medium tracking-wider uppercase py-3 px-4 rounded hover:bg-gray-100 transition-colors ${activeSection === 'gameplay' ? 'bg-gray-100' : ''}`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    Gameplay Features
+                  </a>
+                  <a
+                    href="#about"
+                    className={`block text-black font-medium tracking-wider uppercase py-3 px-4 rounded hover:bg-gray-100 transition-colors ${activeSection === 'about' ? 'bg-gray-100' : ''}`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    Are You Ready?
+                  </a>
+                </nav>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -629,31 +743,31 @@ export default function Home() {
       </section>
 
       {/* Gameplay Features Section */}
-      <section id="gameplay" className="h-screen relative bg-cover bg-center bg-no-repeat flex items-center" style={{ backgroundImage: 'url(/features-section.png)' }}>
+      <section id="gameplay" className="min-h-screen py-12 md:py-0 md:h-screen relative bg-cover bg-center bg-no-repeat flex items-center" style={{ backgroundImage: 'url(/features-section.png)' }}>
         <div className="absolute inset-0 bg-black/50"></div>
-        <div className="container mx-auto px-2 md:px-4 relative z-10 w-full h-full flex flex-col">
+        <div className="container mx-auto px-4 md:px-4 relative z-10 w-full h-full flex flex-col py-8 md:py-0">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-8 mt-12 md:mt-16"
+            className="text-center mb-6 md:mb-8 mt-4 md:mt-16"
           >
-            <h2 className="text-6xl md:text-7xl font-bold mb-8 text-white">
+            <h2 className="text-3xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-8 text-white">
               Gameplay Features
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-5 gap-6 md:gap-8 w-full items-center flex-1 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8 w-full items-center flex-1 overflow-hidden">
             {/* Bullet Points on Left */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="flex items-center h-full md:col-span-2"
+              className="flex items-center h-full md:col-span-2 order-2 md:order-1"
             >
-              <ul className="space-y-4 text-white text-xl md:text-2xl">
+              <ul className="space-y-3 md:space-y-4 text-white text-base md:text-xl lg:text-2xl w-full">
                 {[
                   "Choose between three unique heroes, each with distinct powers and combat styles",
                   "Engage in high-intensity missions against waves of advanced enemy robots",
@@ -670,7 +784,7 @@ export default function Home() {
                     viewport={{ once: true }}
                     className="flex items-start"
                   >
-                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-white mr-3 mt-1 flex-shrink-0">•</span>
                     <span>{feature}</span>
                   </motion.li>
                 ))}
@@ -681,22 +795,42 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.5 }}
               viewport={{ once: true }}
-              className="relative md:col-span-3"
+              className="relative md:col-span-3 order-1 md:order-2 mb-6 md:mb-0"
             >
               <div className="relative overflow-hidden rounded-lg">
                 <motion.div
-                  className="flex gap-3 md:gap-4"
-                  animate={{
-                    x: `-${gameplayCarouselIndex * (100 / 3)}%`
+                  className="flex"
+                  style={{
+                    gap: '0'
                   }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  animate={{
+                    x: `-${gameplayCarouselIndex * 100}%`
+                  }}
+                  transition={{ 
+                    duration: gameplayCarouselIndex >= 8 ? 0 : 0.5, 
+                    ease: "easeInOut" 
+                  }}
                 >
+                  {/* Original images */}
                   {[1, 3, 4, 5, 6, 7, 8, 9].map((i) => (
                     <div
-                      key={i}
-                      className="flex-shrink-0 h-[500px] rounded-lg overflow-hidden w-[calc(33.333%-0.5rem)] md:w-[calc(33.333%-0.67rem)]"
+                      key={`original-${i}`}
+                      className="flex-shrink-0 h-[250px] sm:h-[350px] md:h-[500px] rounded-lg overflow-hidden w-full"
+                    >
+                      <img
+                        src={`/gameplay-${i}.png`}
+                        alt={`Gameplay ${i}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                  {/* Duplicated first image for seamless loop */}
+                  {[1].map((i, idx) => (
+                    <div
+                      key={`duplicate-${i}-${idx}`}
+                      className="flex-shrink-0 h-[250px] sm:h-[350px] md:h-[500px] rounded-lg overflow-hidden w-full"
                     >
                       <img
                         src={`/gameplay-${i}.png`}
