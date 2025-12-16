@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
@@ -334,7 +333,7 @@ export default function Home() {
                   Descend Into Intense Combat Zones
             </h3>
                 <p className="text-base md:text-lg text-white/80 mb-6 leading-relaxed">
-                  As robotic invaders lay waste to cities worldwide, the heroes descend into intense combat zones across Earth's surface. Engage in high-intensity missions against waves of advanced enemy robots.
+                  As robotic invaders lay waste to cities worldwide, the heroes descend into intense combat zones across Earth&apos;s surface. Engage in high-intensity missions against waves of advanced enemy robots.
                 </p>
                 <Button 
                   className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-6 rounded-none uppercase w-fit"
@@ -402,7 +401,7 @@ export default function Home() {
                   Battle Through Devastated Cities Worldwide
                 </h3>
                 <p className="text-base md:text-lg text-white/80 mb-6 leading-relaxed">
-                  Fight through the ruins of Earth's greatest cities as robotic invaders harvest resources and destroy everything in their path. The heroes must act fast before Earth falls completely.
+                  Fight through the ruins of Earth&apos;s greatest cities as robotic invaders harvest resources and destroy everything in their path. The heroes must act fast before Earth falls completely.
                 </p>
                 <Button 
                   className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-6 rounded-none uppercase w-fit"
