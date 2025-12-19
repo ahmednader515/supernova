@@ -511,17 +511,24 @@ export default function Home() {
             transition={{ duration: 1, delay: 0.5 }}
             className="w-full"
           >
-            <Button 
-              size="lg" 
-              className="w-full bg-white/10 backdrop-blur-lg text-white text-xl px-8 py-6 transition-all duration-300 border border-white/30 hover:bg-white/15 hover:backdrop-blur-md hover:border-white/50 hover:shadow-lg rounded-lg flex items-center justify-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_0_40px_rgba(0,0,0,0.1)]"
+            <a 
+              href="https://store.steampowered.com/app/4256450/Super_Nova/?beta=0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full"
             >
-              <img 
-                src="/Steam_icon_logo.svg.png" 
-                alt="Steam Logo" 
-                className="w-8 h-8"
-              />
-              Available Now on Steam
-            </Button>
+              <Button 
+                size="lg" 
+                className="w-full bg-white/10 backdrop-blur-lg text-white text-xl px-8 py-6 transition-all duration-300 border border-white/30 hover:bg-white/15 hover:backdrop-blur-md hover:border-white/50 hover:shadow-lg rounded-lg flex items-center justify-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_0_40px_rgba(0,0,0,0.1)]"
+              >
+                <img 
+                  src="/Steam_icon_logo.svg.png" 
+                  alt="Steam Logo" 
+                  className="w-8 h-8"
+                />
+                Available Now on Steam
+              </Button>
+            </a>
           </motion.div>
         </div>
       </section>
