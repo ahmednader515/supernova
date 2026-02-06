@@ -689,7 +689,7 @@ export default function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto items-start">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto items-start">
             {[
               {
                 image: '/velocity.PNG',
@@ -711,6 +711,13 @@ export default function Home() {
                 subtitle: 'Dominating Force',
                 description: 'A commanding presence on the battlefield, using overwhelming force and tactical superiority to dominate enemies and lead the charge.',
                 topOffset: 'mt-8'
+              },
+              {
+                image: '/slingshot.png',
+                name: 'SlingShot',
+                subtitle: 'Web Energy',
+                description: 'The Web Wanderer wielding web energy powers. Capable of web-based mobility and fast movement with Web Dash, releasing devastating white energy waves, restoring health over time, and creating protective energy shields.',
+                topOffset: 'mt-4'
               }
             ].map((hero, index) => (
               <motion.div
